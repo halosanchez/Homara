@@ -1,0 +1,231 @@
+/* ===== RESET & BASE STYLES ===== */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Dot Matrix Font */
+@font-face {
+    font-family: 'DotMatrix';
+    src: url('DOTMATRI.TTF') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'DotMatrix';
+    src: url('DOTMBold.TTF') format('truetype');
+    font-weight: bold;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'PixelFont';
+    src: local('Courier New'), local('Courier'), local('Monaco'), local('Consolas');
+}
+
+body {
+    font-family: system-ui, -apple-system, sans-serif;
+    background-color: #ffffff;
+    color: #000000;
+    overflow: hidden;
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+/* ===== FLOATING NAVIGATION ===== */
+.floating-nav {
+    position: fixed;
+    top: 15px;
+    left: 15px;
+    z-index: 100;
+    display: flex;
+    flex-direction: row;
+    gap: 20px;
+    align-items: center;
+}
+
+.floating-link {
+    position: relative;
+    text-decoration: none;
+    color: #000000;
+    font-family: 'Courier New', 'Courier', 'Monaco', 'Consolas', monospace;
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    padding: 5px 8px;
+}
+
+.floating-link:hover {
+    color: #666666;
+    transform: translateY(-2px);
+}
+
+.tree-link {
+    color: #4a90e2 !important;
+    border-left: 2px solid #4a90e2;
+    padding-left: 15px !important;
+    margin-left: 20px;
+}
+
+.tree-link:hover {
+    color: #357abd !important;
+}
+
+/* ===== TOP RIGHT LOGO ===== */
+.top-right-logo {
+    position: fixed;
+    top: 15px;
+    right: 15px;
+    z-index: 100;
+}
+
+.homara-logo {
+    height: 80px;
+    width: auto;
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+}
+
+/* ===== HELP ICON ===== */
+.help-icon {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    z-index: 100;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+}
+
+.help-icon:hover {
+    transform: scale(1.1);
+}
+
+/* ===== BACKGROUND GRID ===== */
+#background-canvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+    pointer-events: none;
+}
+
+/* ===== MAIN CONTAINER ===== */
+.main-container {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 10;
+    position: relative;
+}
+
+.center-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+}
+
+/* ===== TREE IMAGE ===== */
+#logo-image {
+    width: 590px;
+    height: 590px;
+    object-fit: contain;
+    opacity: 0;
+    transition: opacity 0.3s ease-in-out;
+    z-index: 15;
+    pointer-events: none;
+}
+
+/* ===== BUILD YOUR OWN TEXT ===== */
+.build-text-container {
+    position: relative;
+    z-index: 15;
+}
+
+.build-text {
+    font-family: 'Courier New', 'Courier', 'Monaco', 'Consolas', monospace;
+    font-size: 32px;
+    font-weight: 700;
+    color: #000000;
+    text-align: center;
+    letter-spacing: 2px;
+    opacity: 1;
+    transition: opacity 0.3s ease-in-out;
+}
+
+/* ===== POINT CLOUD CANVAS ===== */
+#pointcloud-canvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 1;
+    transition: opacity 0.3s ease-in-out;
+    z-index: 20;
+    pointer-events: none;
+}
+
+/* ===== BUILD YOUR OWN TRIGGER BOX ===== */
+.build-trigger-box {
+    position: fixed;
+    top: 20%;
+    left: 50%;
+    transform: translateX(-50%);
+
+    /* Reduced size - 50% less space */
+    padding: 20px 40px;
+
+    /* Black border with sharp corners, transparent fill */
+    border: 4px solid #000000;
+    border-radius: 0px;
+    background: transparent;
+
+    /* Make it clickable */
+    cursor: pointer;
+    transition: all 0.3s ease;
+
+    /* Ensure it's visible above everything */
+    z-index: 100;
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.build-trigger-box:hover {
+    border-color: #333333;
+    background-color: rgba(0, 0, 0, 0.05);
+    transform: translateX(-50%) scale(1.02);
+}
+
+.build-trigger-box:active {
+    background-color: rgba(0, 0, 0, 0.1);
+    transform: translateX(-50%) scale(0.98);
+}
+
+.build-trigger-text {
+    font-family: 'DotMatrix', monospace;
+    font-size: 48px;
+    font-weight: normal;
+    color: #000000;
+    letter-spacing: 6px;
+    text-align: center;
+    display: block;
+    white-space: nowrap;
+    line-height: 1.2;
+}
+
+/* Hide the box after animation starts - 4 second fade */
+.build-trigger-box.hidden {
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 4s ease;
+}
+

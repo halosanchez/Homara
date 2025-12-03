@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Homara - Tree Demo</title>
+
+    <link rel="stylesheet" href="tree-styles.css">
+</head>
+<body>
+    <!-- Background Grid Canvas -->
+    <canvas id="background-canvas"></canvas>
+
+    <!-- Floating Navigation Links -->
+    <nav class="floating-nav">
+        <a href="#" class="floating-link">Home</a>
+        <a href="#" class="floating-link">Explore</a>
+        <a href="#" class="floating-link">Community</a>
+        <a href="#" class="floating-link">About</a>
+        <a href="../buildpage-index.html" class="floating-link tree-link">← Back to Logo</a>
+    </nav>
+
+    <!-- Top Right Logo -->
+    <div class="top-right-logo">
+        <img src="HomaraH-transparent.png" alt="Homara" class="homara-logo">
+    </div>
+
+    <!-- Help Icon (Bottom Right) -->
+    <div class="help-icon">
+        <svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="20" cy="20" r="18" fill="#6B46C1" stroke="#ffffff" stroke-width="2"/>
+            <text x="20" y="28" font-family="system-ui" font-size="24" font-weight="bold" fill="#ffffff" text-anchor="middle">H</text>
+        </svg>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-container">
+        <!-- Center Tree -->
+        <div class="center-content">
+            <img id="logo-image" src="tree-transparent.png" alt="Tree" class="logo-main">
+
+            <!-- BUILD YOUR OWN Text Box (clickable trigger) -->
+            <div id="build-trigger-box" class="build-trigger-box">
+                <span class="build-trigger-text">BUILD YOUR OWN</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Point Cloud Canvas (Three.js renders here) -->
+    <canvas id="pointcloud-canvas"></canvas>
+
+    <!-- Scripts -->
+    <script type="module" src="tree-engine.js"></script>
+</body>
+</html>
+

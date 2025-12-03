@@ -6,13 +6,22 @@
 
 # Within buildpage, ignore all markdown files
 buildpage/*.md
+buildpage/extract-logo.html
+buildpage/image-compressor.html
+buildpage/unicornstudioreference.html
 
-# Include only the essential BUILD PAGE files
+# Include BUILD PAGE files
 !buildpage/buildpage-index.html
 !buildpage/buildpage-engine.js
 !buildpage/buildpage-styles.css
 !buildpage/HomaraH-transparent.png
+!buildpage/HomaraH.png
 !buildpage/homara-logo.svg
+!buildpage/tree-transparent.png
+
+# Include tree-version folder and all its contents
+!buildpage/tree-version/
+!buildpage/tree-version/*
 
 # Include the apply folder
 !apply/

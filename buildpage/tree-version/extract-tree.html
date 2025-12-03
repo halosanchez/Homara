@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Extract Tree (Black Only)</title>
+    <style>
+        body {
+            font-family: monospace;
+            padding: 40px;
+            background: #f0f0f0;
+        }
+        canvas {
+            border: 2px solid #000;
+            background: white;
+            margin: 20px 0;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            background: #000;
+            color: white;
+            border: none;
+            margin: 10px 5px;
+        }
+        button:hover {
+            background: #333;
+        }
+        .preview {
+            background: repeating-conic-gradient(#ccc 0% 25%, #fff 0% 50%) 50% / 20px 20px;
+            padding: 20px;
+            display: inline-block;
+        }
+        input[type="file"] {
+            margin: 20px 0;
+            padding: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Extract Tree (Black Parts Only)</h1>
+    <p>Upload your tree image. This will keep only the black/dark parts and make everything else transparent.</p>
+    
+    <input type="file" id="fileInput" accept="image/*">
+    
+    <div>
+        <button onclick="processImage()">Process Image</button>
+        <button onclick="downloadImage()">Download as tree-transparent.png</button>
+    </div>
+    
+    <div>
+        <h3>Original:</h3>
+        <canvas id="original"></canvas>
+    </div>
+    
+    <div class="preview">
+        <h3>Transparent (black parts only):</h3>
+        <canvas id="transparent"></canvas>
+    </div>
+    
+    <script>
+        let processedCanvas = null;
+        let uploadedImage = null;
+        
+        document.getElementById('fileInput').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    const img = new Image();
+                    img.onload = function() {
+                        uploadedImage = img;
+                        console.log('✅ Image loaded:', img.width, 'x', img.height);
+                        processImage();
+                    };
+                    img.src = event.target.result;
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+        
+        function processImage() {
+            if (!uploadedImage) {
+                alert('Please upload an image first!');
+                return;
+            }
+            
+            const img = uploadedImage;
+            
+            // Original canvas
+            const originalCanvas = document.getElementById('original');
+            const originalCtx = originalCanvas.getContext('2d');
+            originalCanvas.width = img.width;
+            originalCanvas.height = img.height;
+            originalCtx.drawImage(img, 0, 0);
+            
+            // Get image data
+            const imageData = originalCtx.getImageData(0, 0, img.width, img.height);
+            const data = imageData.data;
+            
+            // Process: keep only black/dark pixels (the tree), make everything else transparent
+            for (let i = 0; i < data.length; i += 4) {
+                const r = data[i];
+                const g = data[i + 1];
+                const b = data[i + 2];
+                
+                // Calculate brightness
+                const brightness = (r + g + b) / 3;
+                
+                // If pixel is dark (part of the black tree), keep it black and opaque
+                // Otherwise, make it completely transparent
+                if (brightness < 200) {  // Threshold: anything darker than 200 is kept
+                    // Keep dark pixels as pure black
+                    data[i] = 0;     // R
+                    data[i + 1] = 0; // G
+                    data[i + 2] = 0; // B
+                    data[i + 3] = 255; // Fully opaque
+                } else {
+                    // Make light pixels (white background) transparent
+                    data[i + 3] = 0; // Fully transparent
+                }
+            }
+            
+            // Draw to transparent canvas
+            const transparentCanvas = document.getElementById('transparent');
+            const transparentCtx = transparentCanvas.getContext('2d');
+            transparentCanvas.width = img.width;
+            transparentCanvas.height = img.height;
+            transparentCtx.putImageData(imageData, 0, 0);
+            
+            processedCanvas = transparentCanvas;
+            
+            console.log('✅ Tree processed! White background removed, only black parts kept.');
+            alert('Tree processed! Click "Download" to save as tree-transparent.png');
+        }
+        
+        function downloadImage() {
+            if (!processedCanvas) {
+                alert('Please process the image first!');
+                return;
+            }
+            
+            processedCanvas.toBlob(function(blob) {
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'tree-transparent.png';
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+                
+                console.log('✅ Download started: tree-transparent.png');
+                alert('✅ Downloaded as tree-transparent.png! Now save it to the tree-version folder.');
+            });
+        }
+    </script>
+</body>
+</html>
+
