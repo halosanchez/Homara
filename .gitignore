@@ -1,0 +1,19 @@
+# Ignore everything by default
+*
+
+# But include the buildpage folder
+!buildpage/
+
+# Within buildpage, ignore all markdown files
+buildpage/*.md
+
+# Include only the essential BUILD PAGE files
+!buildpage/buildpage-index.html
+!buildpage/buildpage-engine.js
+!buildpage/buildpage-styles.css
+!buildpage/HomaraH-transparent.png
+!buildpage/homara-logo.svg
+
+# Keep .gitignore itself
+!.gitignore
+
