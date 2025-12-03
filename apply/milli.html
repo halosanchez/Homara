@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Milli Coordinated Animation</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    html, body {
+      width: 100%;
+      height: 100%;
+      font-family: sans-serif;
+    }
+    .container {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      grid-template-rows: 1fr 1fr;
+      height: 100vh;
+      width: 100vw;
+      position: relative;
+      transition: grid-template-columns 0.8s cubic-bezier(0.4, 0, 0.2, 1),
+                  grid-template-rows 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .box {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2rem;
+      transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+      cursor: pointer;
+      position: relative;
+      background-color: rgba(255, 255, 255, 0);
+    }
+
+    .work {
+      grid-column: 1 / 2;
+      grid-row: 1 / 2;
+      border-top: 2px solid black;
+      border-left: 2px solid black;
+      border-right: 1px solid black;
+      border-bottom: 1px solid black;
+    }
+
+    .connect {
+      grid-column: 2 / 3;
+      grid-row: 1 / 2;
+      border-top: 2px solid black;
+      border-right: 2px solid black;
+      border-left: 1px solid black;
+      border-bottom: 1px solid black;
+    }
+
+    .about {
+      grid-column: 1 / 2;
+      grid-row: 2 / 3;
+      border-bottom: 2px solid black;
+      border-left: 2px solid black;
+      border-right: 1px solid black;
+      border-top: 1px solid black;
+    }
+
+    .community {
+      grid-column: 2 / 3;
+      grid-row: 2 / 3;
+      border-bottom: 2px solid black;
+      border-right: 2px solid black;
+      border-left: 1px solid black;
+      border-top: 1px solid black;
+    }
+
+    .center {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background-color: #f7df4e;
+      padding: 56px 84px;
+      border: 4px solid black;
+      font-size: 2.2rem;
+      font-weight: bold;
+      z-index: 10;
+      box-shadow: 0 0 10px rgba(0,0,0,0.2);
+      transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+      cursor: pointer;
+    }
+
+    /* Work section hover - expands to take most space */
+    .work:hover {
+      background-color: rgba(255, 255, 255, 0.95);
+      z-index: 2;
+    }
+
+    .container:has(.work:hover) {
+      grid-template-columns: 70% 30%;
+      grid-template-rows: 70% 30%;
+    }
+
+    /* Connect section hover */
+    .connect:hover {
+      background-color: rgba(255, 255, 255, 0.95);
+      z-index: 2;
+    }
+
+    .container:has(.connect:hover) {
+      grid-template-columns: 30% 70%;
+      grid-template-rows: 70% 30%;
+    }
+
+    /* About section hover */
+    .about:hover {
+      background-color: rgba(255, 255, 255, 0.95);
+      z-index: 2;
+    }
+
+    .container:has(.about:hover) {
+      grid-template-columns: 70% 30%;
+      grid-template-rows: 30% 70%;
+    }
+
+    /* Community section hover */
+    .community:hover {
+      background-color: rgba(255, 255, 255, 0.95);
+      z-index: 2;
+    }
+
+    .container:has(.community:hover) {
+      grid-template-columns: 30% 70%;
+      grid-template-rows: 30% 70%;
+    }
+
+    /* Center box follows the intersection point for each hover state */
+    .container:has(.work:hover) .center {
+      top: 70%;
+      left: 70%;
+    }
+
+    .container:has(.connect:hover) .center {
+      top: 70%;
+      left: 30%;
+    }
+
+    .container:has(.about:hover) .center {
+      top: 30%;
+      left: 70%;
+    }
+
+    .container:has(.community:hover) .center {
+      top: 30%;
+      left: 30%;
+    }
+
+    /* Ensure smooth transitions when no hover state is active */
+    .container:not(:hover) {
+      grid-template-columns: 1fr 1fr;
+      grid-template-rows: 1fr 1fr;
+    }
+
+    .container:not(:hover) .center {
+      top: 50%;
+      left: 50%;
+    }
+
+    .container:not(:hover) .box {
+      background-color: rgba(255, 255, 255, 0);
+      z-index: 1;
+    }
+
+    /* Center "milli" section hover - expands while staying centered */
+    .center:hover {
+      background-color: #f7df4e;
+      z-index: 15;
+      box-shadow: 0 0 20px rgba(0,0,0,0.4);
+      padding: 30px 50px;
+      font-size: 2.5rem;
+    }
+
+    /* When center is hovered, shrink grid and scale center */
+    .container:has(.center:hover) {
+      grid-template-columns: 0.7fr 0.7fr;
+      grid-template-rows: 0.7fr 0.7fr;
+    }
+
+    .container:has(.center:hover) .center {
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%) scale(2.65);
+    }
+
+    /* Corner boxes shrink when center is hovered */
+    .container:has(.center:hover) .box {
+      transform: scale(0.8);
+      opacity: 0.6;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="box work">WORK</div>
+    <div class="box connect">CONNECT</div>
+    <div class="box about">ABOUT</div>
+    <div class="box community">COMMUNITY</div>
+    <div class="center">milli</div>
+  </div>
+</body>
+</html>

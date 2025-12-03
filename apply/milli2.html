@@ -1,0 +1,1042 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Homara Cities</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    html, body {
+      width: 100%;
+      height: 100%;
+      font-family: sans-serif;
+      background: #E6E6E6;
+      color: #29353C;
+    }
+    .container {
+      display: grid;
+      grid-template-columns: 2.5fr 1.8fr 2.5fr;
+      grid-template-rows: 1.8fr 1.4fr 1.8fr;
+      height: 100vh;
+      width: 100vw;
+      position: relative;
+      gap: 0;
+      transition: grid-template-columns 0.8s cubic-bezier(0.4, 0, 0.2, 1),
+                  grid-template-rows 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    /* Default state - ensure smooth transitions back */
+    .container:not(:has(.center:hover)) {
+      grid-template-columns: 2.5fr 1.8fr 2.5fr;
+      grid-template-rows: 1.8fr 1.4fr 1.8fr;
+    }
+
+    .container:not(:has(.center:hover)) .work {
+      grid-column: 1 / 3;
+      grid-row: 1 / 2;
+      transform: translate(0, 0);
+    }
+
+    .container:not(:has(.center:hover)) .connect {
+      grid-column: 3 / 4;
+      grid-row: 1 / 3;
+      transform: translate(0, 0);
+    }
+
+    .container:not(:has(.center:hover)) .about {
+      grid-column: 1 / 2;
+      grid-row: 2 / 4;
+      transform: translate(0, 0);
+    }
+
+    .container:not(:has(.center:hover)) .community {
+      grid-column: 2 / 4;
+      grid-row: 3 / 4;
+      transform: translate(0, 0);
+    }
+    .box {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2rem;
+      transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+      cursor: pointer;
+      position: relative;
+      background-color: white;
+      border: 3px solid #29353C;
+      color: #29353C;
+    }
+
+    .work {
+      grid-column: 1 / 3;
+      grid-row: 1 / 2;
+      border: 4px solid #29353C;
+    }
+
+    .connect {
+      grid-column: 3 / 4;
+      grid-row: 1 / 3;
+      border: 4px solid #29353C;
+    }
+
+    .about {
+      grid-column: 1 / 2;
+      grid-row: 2 / 4;
+      border: 4px solid #29353C;
+    }
+
+    .community {
+      grid-column: 2 / 4;
+      grid-row: 3 / 4;
+      border: 4px solid #29353C;
+    }
+
+    /* Specific styling for Portland and Seattle */
+    .box.black-text {
+      color: #000000 !important;
+    }
+    .center {
+      grid-column: 2 / 3;
+      grid-row: 2 / 3;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background-color: #AAC7D8;
+      border: 4px solid #29353C;
+      color: #29353C;
+      font-size: 2.2rem;
+      font-weight: bold;
+      z-index: 10;
+      box-shadow: 0 0 15px rgba(170, 199, 216, 0.3);
+      transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .center:hover {
+      background-color: #44576D;
+      color: #DFEBF6;
+    }
+
+    /* Video background styling */
+    .center-video {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      opacity: 0;
+      transition: opacity 0.5s ease;
+      z-index: -1;
+    }
+
+    .center:hover .center-video {
+      opacity: 0.7;
+    }
+
+    /* Text should stay above video */
+    .center-text {
+      position: relative;
+      z-index: 2;
+    }
+
+
+
+    /* Work section hover - expands to take most space */
+    .work:hover {
+      background-color: white;
+      z-index: 2;
+    }
+
+    .container:has(.work:hover) {
+      grid-template-columns: 3.2fr 1.2fr 1.6fr;
+      grid-template-rows: 2.6fr 1fr 1.4fr;
+    }
+
+    .container:has(.work:hover) .work {
+      background-color: white;
+      border: 3px solid #29353C;
+      border-right: 2px solid #29353C;
+      border-bottom: 2px solid #29353C;
+    }
+
+    .container:has(.work:hover) .connect {
+      border: 3px solid #29353C;
+      border-left: 2px solid #29353C;
+      border-bottom: 2px solid #29353C;
+    }
+
+    .container:has(.work:hover) .about {
+      border: 3px solid #29353C;
+      border-right: 2px solid #29353C;
+      border-top: 2px solid #29353C;
+    }
+
+    .container:has(.work:hover) .community {
+      border: 3px solid #29353C;
+      border-left: 2px solid #29353C;
+      border-top: 2px solid #29353C;
+    }
+
+    .container:has(.work:hover) .center {
+      grid-column: 2 / 3;
+      grid-row: 2 / 3;
+    }
+
+    /* Connect section hover */
+    .connect:hover {
+      background-color: white;
+      z-index: 2;
+    }
+
+    .container:has(.connect:hover) {
+      grid-template-columns: 1.6fr 1.2fr 3.2fr;
+      grid-template-rows: 2.6fr 1fr 1.4fr;
+    }
+
+    .container:has(.connect:hover) .work {
+      border: 3px solid #29353C;
+      border-right: 2px solid #29353C;
+      border-bottom: 2px solid #29353C;
+    }
+
+    .container:has(.connect:hover) .connect {
+      background-color: white;
+      border: 3px solid #29353C;
+      border-left: 2px solid #29353C;
+      border-bottom: 2px solid #29353C;
+    }
+
+    .container:has(.connect:hover) .about {
+      border: 3px solid #29353C;
+      border-right: 2px solid #29353C;
+      border-top: 2px solid #29353C;
+    }
+
+    .container:has(.connect:hover) .community {
+      border: 3px solid #29353C;
+      border-left: 2px solid #29353C;
+      border-top: 2px solid #29353C;
+    }
+
+    /* About section hover */
+    .about:hover {
+      background-color: white;
+      z-index: 2;
+    }
+
+    .container:has(.about:hover) {
+      grid-template-columns: 2.6fr 1.2fr 1.6fr;
+      grid-template-rows: 1.4fr 1fr 2.6fr;
+    }
+
+    .container:has(.about:hover) .work {
+      border: 3px solid #29353C;
+      border-right: 2px solid #29353C;
+      border-bottom: 2px solid #29353C;
+    }
+
+    .container:has(.about:hover) .connect {
+      border: 3px solid #29353C;
+      border-left: 2px solid #29353C;
+      border-bottom: 2px solid #29353C;
+    }
+
+    .container:has(.about:hover) .about {
+      background-color: white;
+      border: 3px solid #29353C;
+      border-right: 2px solid #29353C;
+      border-top: 2px solid #29353C;
+    }
+
+    .container:has(.about:hover) .community {
+      border: 3px solid #29353C;
+      border-left: 2px solid #29353C;
+      border-top: 2px solid #29353C;
+    }
+
+    /* Community section hover */
+    .community:hover {
+      background-color: white;
+      z-index: 2;
+    }
+
+    .container:has(.community:hover) {
+      grid-template-columns: 1.6fr 1.2fr 2.6fr;
+      grid-template-rows: 1.4fr 1fr 2.6fr;
+    }
+
+    .container:has(.community:hover) .work {
+      border: 3px solid #29353C;
+      border-right: 2px solid #29353C;
+      border-bottom: 2px solid #29353C;
+    }
+
+    .container:has(.community:hover) .connect {
+      border: 3px solid #29353C;
+      border-left: 2px solid #29353C;
+      border-bottom: 2px solid #29353C;
+    }
+
+    .container:has(.community:hover) .about {
+      border: 3px solid #29353C;
+      border-right: 2px solid #29353C;
+      border-top: 2px solid #29353C;
+    }
+
+    .container:has(.community:hover) .community {
+      background-color: white;
+      border: 3px solid #29353C;
+      border-left: 2px solid #29353C;
+      border-top: 2px solid #29353C;
+    }
+
+    /* Ensure smooth transitions when no hover state is active */
+    .container:not(:hover) {
+      grid-template-columns: 2.5fr 1.8fr 2.5fr;
+      grid-template-rows: 1.8fr 1.4fr 1.8fr;
+    }
+
+    .container:not(:hover) .box {
+      background-color: rgba(255, 255, 255, 0);
+      z-index: 1;
+      opacity: 1;
+      transform: translate(0, 0);
+    }
+
+    /* Force borders to show when nothing is hovered */
+    .container:not(:hover) .work {
+      border-top: 2px solid black;
+      border-left: 2px solid black;
+      border-right: none;
+      border-bottom: none;
+    }
+
+    .container:not(:hover) .connect {
+      border-top: 2px solid black;
+      border-right: 2px solid black;
+      border-left: none;
+      border-bottom: none;
+    }
+
+    .container:not(:hover) .about {
+      border-bottom: 2px solid black;
+      border-left: 2px solid black;
+      border-top: none;
+      border-right: none;
+    }
+
+    .container:not(:hover) .community {
+      border-bottom: 2px solid black;
+      border-right: 2px solid black;
+      border-left: none;
+      border-top: none;
+    }
+
+
+
+    /* Center "milli" section hover - expands while staying at intersection */
+    .center:hover {
+      background-color: #44576D;
+      color: #DFEBF6;
+      z-index: 15;
+      box-shadow: 0 0 20px rgba(68, 87, 109, 0.4);
+      padding: 30px 50px;
+      font-size: 2.5rem;
+    }
+
+    /* When center is hovered, expand center and reshape corners */
+    .container:has(.center:hover) {
+      grid-template-columns: 1.8fr 2.4fr 1.8fr;
+      grid-template-rows: 1.2fr 2.6fr 1.2fr;
+    }
+
+    .container:has(.center:hover) .center {
+      grid-column: 2 / 3;
+      grid-row: 2 / 3;
+      background-color: #44576D;
+      color: #DFEBF6;
+      border: 4px solid #29353C;
+    }
+
+    /* WORK spans across top, sharing border with center */
+    .container:has(.center:hover) .work {
+      grid-column: 1 / 3;
+      grid-row: 1 / 2;
+      border: 2px solid black;
+      border-bottom: 0px;
+    }
+
+    /* CONNECT spans down right side, sharing border with center */
+    .container:has(.center:hover) .connect {
+      grid-column: 3 / 4;
+      grid-row: 1 / 3;
+      border: 2px solid black;
+      border-left: 0px;
+    }
+
+    /* ABOUT spans down left side, sharing border with center */
+    .container:has(.center:hover) .about {
+      grid-column: 1 / 2;
+      grid-row: 2 / 4;
+      border: 2px solid black;
+      border-right: 0px;
+    }
+
+    /* COMMUNITY spans across bottom, sharing border with center */
+    .container:has(.center:hover) .community {
+      grid-column: 2 / 4;
+      grid-row: 3 / 4;
+      border: 2px solid black;
+      border-top: 0px;
+    }
+
+    /* Initial border styles */
+    .container .box.work,
+    .container .box.connect,
+    .container .box.about,
+    .container .box.community {
+      border: 2px solid black !important;
+    }
+
+    /* Search Bar - Rounded Style */
+    .search-container {
+      position: fixed;
+      top: 20px;
+      left: 20px;
+      z-index: 100;
+    }
+
+    .search-bar {
+      width: 250px;
+      height: 45px;
+      padding: 12px 15px;
+      border: 3px solid #29353C;
+      border-radius: 15px;
+      font-size: 16px;
+      font-family: sans-serif;
+      font-weight: bold;
+      outline: none;
+      background-color: #DFEBF6;
+      color: #29353C;
+      transition: all 0.3s ease;
+    }
+
+    .search-bar:focus {
+      background-color: #AAC7D8;
+      transform: translateX(5px);
+      box-shadow: -5px 5px 0px #29353C;
+    }
+
+    .search-bar::placeholder {
+      color: #44576D;
+      font-weight: normal;
+    }
+
+    /* Autocomplete dropdown styles */
+    .autocomplete-dropdown {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      right: 0;
+      background-color: #DFEBF6;
+      border: 3px solid #29353C;
+      border-top: none;
+      border-radius: 0 0 15px 15px;
+      max-height: 200px;
+      overflow-y: auto;
+      z-index: 1000;
+      display: none;
+    }
+
+    .autocomplete-item {
+      padding: 12px 15px;
+      cursor: pointer;
+      border-bottom: 1px solid #AAC7D8;
+      font-family: sans-serif;
+      font-size: 16px;
+      color: #29353C;
+      transition: background-color 0.2s ease;
+    }
+
+    .autocomplete-item:hover,
+    .autocomplete-item.highlighted {
+      background-color: #AAC7D8;
+      font-weight: bold;
+    }
+
+    .autocomplete-item:last-child {
+      border-bottom: none;
+    }
+
+    /* Scroll down arrow button - Smaller */
+    .scroll-arrow {
+      position: fixed;
+      bottom: 30px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 40px;
+      height: 40px;
+      background-color: #AAC7D8;
+      border: 2px solid #29353C;
+      border-radius: 50%;
+      cursor: pointer;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s ease;
+      opacity: 0;
+      visibility: hidden;
+    }
+
+    .scroll-arrow.visible {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .scroll-arrow:hover {
+      background-color: #44576D;
+      transform: translateX(-50%) translateY(-3px);
+      box-shadow: 0 3px 10px rgba(68, 87, 109, 0.3);
+    }
+
+    .scroll-arrow::after {
+      content: '';
+      width: 0;
+      height: 0;
+      border-left: 8px solid transparent;
+      border-right: 8px solid transparent;
+      border-top: 10px solid #29353C;
+    }
+
+    /* Scroll up arrow button - Smaller */
+    .scroll-arrow-up {
+      position: fixed;
+      top: 30px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 40px;
+      height: 40px;
+      background-color: #AAC7D8;
+      border: 2px solid #29353C;
+      border-radius: 50%;
+      cursor: pointer;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s ease;
+      opacity: 0;
+      visibility: hidden;
+    }
+
+    .scroll-arrow-up.visible {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .scroll-arrow-up:hover {
+      background-color: #44576D;
+      transform: translateX(-50%) translateY(3px);
+      box-shadow: 0 -3px 10px rgba(68, 87, 109, 0.3);
+    }
+
+    .scroll-arrow-up::after {
+      content: '';
+      width: 0;
+      height: 0;
+      border-left: 8px solid transparent;
+      border-right: 8px solid transparent;
+      border-bottom: 10px solid #29353C;
+    }
+
+
+
+    /* Page sections */
+    .page-section {
+      height: 100vh;
+      width: 100vw;
+      position: fixed;
+      top: 0;
+      left: 0;
+      transition: all 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    }
+
+    .page-section#page1 {
+      z-index: 10;
+      transform: translateY(0);
+      opacity: 1;
+    }
+
+    .page-section#page2 {
+      z-index: 5;
+      transform: translateY(100vh);
+      opacity: 0;
+    }
+
+    .page-section#page2.active {
+      transform: translateY(0);
+      opacity: 1;
+      z-index: 10;
+    }
+
+    .page-section#page1.hidden {
+      transform: translateY(-100vh);
+      opacity: 0;
+    }
+
+    /* Smooth fade overlay during transition */
+    .page-section::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(255, 255, 255, 0);
+      z-index: 1;
+      transition: background 0.6s ease;
+      pointer-events: none;
+    }
+
+    .page-section.transitioning::before {
+      background: rgba(255, 255, 255, 0.1);
+    }
+
+
+
+    /* Prevent body scroll */
+    body {
+      overflow: hidden;
+      height: 100vh;
+    }
+
+
+  </style>
+</head>
+<body>
+  <!-- Page 1 -->
+  <div class="page-section" id="page1">
+    <!-- Search Bar - Rounded Style with Autocomplete -->
+    <div class="search-container">
+      <input type="text" class="search-bar" id="citySearch" placeholder="Find your city..." autocomplete="off">
+      <div class="autocomplete-dropdown" id="autocompleteDropdown"></div>
+    </div>
+
+    <div class="container">
+      <div class="box work">CHICAGO</div>
+      <div class="box connect">NEW YORK</div>
+      <div class="box about">PORTLAND</div>
+      <div class="box community">LOS ANGELES</div>
+      <div class="center">
+        <video class="center-video" muted preload="auto" loop>
+          <source src="homara-video.mp4" type="video/mp4">
+          <!-- Fallback for browsers that don't support video -->
+        </video>
+        <span class="center-text">HOMARA</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Page 2 -->
+  <div class="page-section" id="page2">
+    <div class="container">
+      <div class="box work">MIAMI</div>
+      <div class="box connect">AUSTIN</div>
+      <div class="box about">SEATTLE</div>
+      <div class="box community">SAN FRANCISCO</div>
+      <div class="center">
+        <video class="center-video" muted preload="auto" loop>
+          <source src="homara-video.mp4" type="video/mp4">
+          <!-- Fallback for browsers that don't support video -->
+        </video>
+        <span class="center-text">HOMARA</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scroll Arrows -->
+  <div class="scroll-arrow" id="scrollArrow"></div>
+  <div class="scroll-arrow-up" id="scrollArrowUp"></div>
+
+  <script>
+    // List of cities we're working with and their websites
+    const cities = [
+      'Chicago', 'New York', 'Portland', 'Los Angeles',
+      'Miami', 'Austin', 'Seattle', 'San Francisco'
+    ];
+
+    // City websites mapping
+    const cityWebsites = {
+      'CHICAGO': 'https://www.chicago.gov',
+      'NEW YORK': 'https://www.nyc.gov',
+      'PORTLAND': 'https://www.portland.gov',
+      'LOS ANGELES': 'https://www.lacity.org',
+      'MIAMI': 'https://www.miamigov.com',
+      'AUSTIN': 'https://www.austintexas.gov',
+      'SEATTLE': 'https://www.seattle.gov',
+      'SAN FRANCISCO': 'https://www.sf.gov'
+    };
+
+    const searchInput = document.getElementById('citySearch');
+    const dropdown = document.getElementById('autocompleteDropdown');
+    let currentFocus = -1;
+
+    // Get references to the corner boxes
+    const workBox = document.querySelector('.work');
+    const connectBox = document.querySelector('.connect');
+    const aboutBox = document.querySelector('.about');
+    const communityBox = document.querySelector('.community');
+
+    // Store original cities for both pages
+    const originalCitiesPage1 = ['CHICAGO', 'NEW YORK', 'PORTLAND', 'LOS ANGELES'];
+    const originalCitiesPage2 = ['MIAMI', 'AUSTIN', 'SEATTLE', 'SAN FRANCISCO'];
+
+    // Function to apply black text to Portland and Seattle
+    function applyBlackTextToPortlandSeattle() {
+      const allBoxes = document.querySelectorAll('.box');
+      allBoxes.forEach(box => {
+        if (box.textContent === 'PORTLAND' || box.textContent === 'SEATTLE') {
+          box.classList.add('black-text');
+        } else {
+          box.classList.remove('black-text');
+        }
+      });
+    }
+
+    // Apply black text initially
+    applyBlackTextToPortlandSeattle();
+
+    // Function to add click functionality to city boxes
+    function addCityClickListeners() {
+      const allBoxes = document.querySelectorAll('.box');
+      allBoxes.forEach(box => {
+        box.addEventListener('click', function() {
+          const cityName = this.textContent.trim();
+          const website = cityWebsites[cityName];
+          if (website) {
+            window.open(website, '_blank');
+          }
+        });
+      });
+    }
+
+    // Add click listeners initially
+    addCityClickListeners();
+
+    // Video hover functionality
+    function setupVideoHover() {
+      const centerBoxes = document.querySelectorAll('.center');
+
+      centerBoxes.forEach(centerBox => {
+        const video = centerBox.querySelector('.center-video');
+
+        if (video) {
+          // Mouse enter - start video from beginning
+          centerBox.addEventListener('mouseenter', function() {
+            video.currentTime = 0; // Reset to beginning
+            video.play().catch(e => {
+              console.log('Video play failed:', e);
+            });
+          });
+
+          // Mouse leave - pause video and fade out
+          centerBox.addEventListener('mouseleave', function() {
+            video.pause();
+            video.currentTime = 0; // Reset to beginning for next hover
+          });
+        }
+      });
+    }
+
+    // Setup video hover initially
+    setupVideoHover();
+
+    searchInput.addEventListener('input', function() {
+      const value = this.value.toLowerCase();
+      dropdown.innerHTML = '';
+      currentFocus = -1;
+
+      if (!value) {
+        dropdown.style.display = 'none';
+        // Reset to original cities based on current page
+        resetToOriginalCities();
+        return;
+      }
+
+      const matches = cities.filter(city =>
+        city.toLowerCase().includes(value)
+      ).slice(0, 8); // Limit to 8 results for dropdown
+
+      // Get top 4 matches for the corner boxes
+      const topMatches = matches.slice(0, 4);
+      updateCornerBoxes(topMatches);
+
+      if (matches.length === 0) {
+        dropdown.style.display = 'none';
+        return;
+      }
+
+      matches.forEach((city, index) => {
+        const item = document.createElement('div');
+        item.className = 'autocomplete-item';
+        item.textContent = city;
+        item.addEventListener('click', function() {
+          searchInput.value = city;
+          dropdown.style.display = 'none';
+        });
+        dropdown.appendChild(item);
+      });
+
+      dropdown.style.display = 'block';
+    });
+
+    function updateCornerBoxes(matches) {
+      const boxes = [workBox, connectBox, aboutBox, communityBox];
+
+      // Fill boxes with matches, or keep original if not enough matches
+      const currentOriginals = currentPage === 1 ? originalCitiesPage1 : originalCitiesPage2;
+
+      boxes.forEach((box, index) => {
+        if (matches[index]) {
+          box.textContent = matches[index].toUpperCase();
+          box.style.backgroundColor = 'white'; // Keep boxes white for search results
+        } else {
+          box.textContent = currentOriginals[index];
+          box.style.backgroundColor = 'white'; // Keep boxes white
+        }
+      });
+
+      // Apply black text to Portland and Seattle after updating content
+      applyBlackTextToPortlandSeattle();
+
+      // Re-add click listeners after content update
+      addCityClickListeners();
+    }
+
+    function resetToOriginalCities() {
+      const boxes = [workBox, connectBox, aboutBox, communityBox];
+      const currentOriginals = currentPage === 1 ? originalCitiesPage1 : originalCitiesPage2;
+
+      boxes.forEach((box, index) => {
+        box.textContent = currentOriginals[index];
+        box.style.backgroundColor = ''; // Reset to default
+      });
+
+      // Apply black text to Portland and Seattle after resetting
+      applyBlackTextToPortlandSeattle();
+
+      // Re-add click listeners after reset
+      addCityClickListeners();
+    }
+
+    // Keyboard navigation
+    searchInput.addEventListener('keydown', function(e) {
+      const items = dropdown.querySelectorAll('.autocomplete-item');
+
+      if (e.key === 'ArrowDown') {
+        e.preventDefault();
+        currentFocus++;
+        if (currentFocus >= items.length) currentFocus = 0;
+        setActive(items);
+      } else if (e.key === 'ArrowUp') {
+        e.preventDefault();
+        currentFocus--;
+        if (currentFocus < 0) currentFocus = items.length - 1;
+        setActive(items);
+      } else if (e.key === 'Enter') {
+        e.preventDefault();
+        if (currentFocus > -1 && items[currentFocus]) {
+          searchInput.value = items[currentFocus].textContent;
+          dropdown.style.display = 'none';
+        }
+      } else if (e.key === 'Escape') {
+        dropdown.style.display = 'none';
+        currentFocus = -1;
+      }
+    });
+
+    function setActive(items) {
+      items.forEach((item, index) => {
+        item.classList.toggle('highlighted', index === currentFocus);
+      });
+    }
+
+    // Hide dropdown when clicking outside
+    document.addEventListener('click', function(e) {
+      if (!searchInput.contains(e.target) && !dropdown.contains(e.target)) {
+        dropdown.style.display = 'none';
+      }
+    });
+
+    // Page navigation functionality
+    const scrollArrow = document.getElementById('scrollArrow');
+    const scrollArrowUp = document.getElementById('scrollArrowUp');
+    const page1 = document.getElementById('page1');
+    const page2 = document.getElementById('page2');
+    let scrollAccumulator = 0;
+    let currentPage = 1;
+
+    // Detect scroll attempts to show arrows (but prevent actual scrolling)
+    window.addEventListener('wheel', function(e) {
+      e.preventDefault(); // Prevent actual scrolling
+
+      if (currentPage === 1) {
+        if (e.deltaY > 0) { // Scrolling down
+          scrollAccumulator += Math.abs(e.deltaY);
+          if (scrollAccumulator > 300) { // Show down arrow after enough scroll attempts
+            scrollArrow.classList.add('visible');
+          }
+        } else { // Scrolling up
+          scrollAccumulator = Math.max(0, scrollAccumulator - Math.abs(e.deltaY));
+          if (scrollAccumulator <= 100) {
+            scrollArrow.classList.remove('visible');
+          }
+        }
+      } else if (currentPage === 2) {
+        if (e.deltaY < 0) { // Scrolling up
+          scrollAccumulator += Math.abs(e.deltaY);
+          if (scrollAccumulator > 300) { // Show up arrow after enough scroll attempts
+            scrollArrowUp.classList.add('visible');
+          }
+        } else { // Scrolling down
+          scrollAccumulator = Math.max(0, scrollAccumulator - Math.abs(e.deltaY));
+          if (scrollAccumulator <= 100) {
+            scrollArrowUp.classList.remove('visible');
+          }
+        }
+      }
+    }, { passive: false });
+
+    // Navigate to page 2 when down arrow is clicked
+    scrollArrow.addEventListener('click', function() {
+      if (currentPage === 1) {
+        // Add transition class for smooth effect
+        page1.classList.add('transitioning');
+        page2.classList.add('transitioning');
+
+        // Start transition
+        setTimeout(() => {
+          page1.classList.add('hidden');
+          page2.classList.add('active');
+          scrollArrow.classList.remove('visible');
+          scrollAccumulator = 0;
+          currentPage = 2;
+
+          // Update corner boxes for new page if search is active
+          if (searchInput.value) {
+            const value = searchInput.value.toLowerCase();
+            const matches = cities.filter(city =>
+              city.toLowerCase().includes(value)
+            ).slice(0, 4);
+            updateCornerBoxes(matches);
+          } else {
+            resetToOriginalCities();
+          }
+
+          // Apply black text to Portland and Seattle after page change
+          applyBlackTextToPortlandSeattle();
+
+          // Re-add click listeners after page change
+          addCityClickListeners();
+        }, 50);
+
+        // Remove transition class after animation
+        setTimeout(() => {
+          page1.classList.remove('transitioning');
+          page2.classList.remove('transitioning');
+        }, 1300);
+      }
+    });
+
+    // Navigate to page 1 when up arrow is clicked
+    scrollArrowUp.addEventListener('click', function() {
+      if (currentPage === 2) {
+        // Add transition class for smooth effect
+        page1.classList.add('transitioning');
+        page2.classList.add('transitioning');
+
+        // Start transition
+        setTimeout(() => {
+          page1.classList.remove('hidden');
+          page2.classList.remove('active');
+          scrollArrowUp.classList.remove('visible');
+          scrollAccumulator = 0;
+          currentPage = 1;
+
+          // Update corner boxes for new page if search is active
+          if (searchInput.value) {
+            const value = searchInput.value.toLowerCase();
+            const matches = cities.filter(city =>
+              city.toLowerCase().includes(value)
+            ).slice(0, 4);
+            updateCornerBoxes(matches);
+          } else {
+            resetToOriginalCities();
+          }
+
+          // Apply black text to Portland and Seattle after page change
+          applyBlackTextToPortlandSeattle();
+
+          // Re-add click listeners after page change
+          addCityClickListeners();
+        }, 50);
+
+        // Remove transition class after animation
+        setTimeout(() => {
+          page1.classList.remove('transitioning');
+          page2.classList.remove('transitioning');
+        }, 1300);
+      }
+    });
+
+    // Optional: Add way to navigate with ESC key
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape' && currentPage === 2) {
+        // Add transition class for smooth effect
+        page1.classList.add('transitioning');
+        page2.classList.add('transitioning');
+
+        // Start transition
+        setTimeout(() => {
+          page1.classList.remove('hidden');
+          page2.classList.remove('active');
+          scrollArrowUp.classList.remove('visible');
+          scrollAccumulator = 0;
+          currentPage = 1;
+
+          // Update corner boxes for new page if search is active
+          if (searchInput.value) {
+            const value = searchInput.value.toLowerCase();
+            const matches = cities.filter(city =>
+              city.toLowerCase().includes(value)
+            ).slice(0, 4);
+            updateCornerBoxes(matches);
+          } else {
+            resetToOriginalCities();
+          }
+
+          // Apply black text to Portland and Seattle after page change
+          applyBlackTextToPortlandSeattle();
+
+          // Re-add click listeners after page change
+          addCityClickListeners();
+        }, 50);
+
+        // Remove transition class after animation
+        setTimeout(() => {
+          page1.classList.remove('transitioning');
+          page2.classList.remove('transitioning');
+        }, 1300);
+      }
+    });
+  </script>
+</body>
+</html>

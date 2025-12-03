@@ -14,6 +14,10 @@ buildpage/*.md
 !buildpage/HomaraH-transparent.png
 !buildpage/homara-logo.svg
 
+# Include the apply folder
+!apply/
+!apply/*
+
 # Keep .gitignore itself
 !.gitignore
 

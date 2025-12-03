@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Homara Cities</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <!-- Search Bar -->
+  <div class="search-container">
+    <input type="text" id="citySearch" class="search-bar" placeholder="Find your city...">
+    <div id="autocompleteDropdown" class="autocomplete-dropdown"></div>
+  </div>
+
+  <!-- Page 1 -->
+  <div class="page-section active" id="page1">
+    <div class="container">
+      <div class="box work">CHICAGO</div>
+      <div class="box connect">NEW YORK</div>
+      <div class="box about">PORTLAND</div>
+      <div class="box community">LOS ANGELES</div>
+      <div class="center">
+        <video class="center-video" muted preload="auto" loop>
+          <source src="homara-video.mp4" type="video/mp4">
+        </video>
+        <span class="center-text">HOMARA</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Page 2 -->
+  <div class="page-section" id="page2">
+    <div class="container">
+      <div class="box work">MIAMI</div>
+      <div class="box connect">AUSTIN</div>
+      <div class="box about">SEATTLE</div>
+      <div class="box community">SAN FRANCISCO</div>
+      <div class="center">
+        <video class="center-video" muted preload="auto" loop>
+          <source src="homara-video.mp4" type="video/mp4">
+        </video>
+        <span class="center-text">HOMARA</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Navigation Arrows -->
+  <div class="scroll-arrow" id="scrollArrow"></div>
+  <div class="scroll-arrow-up" id="scrollArrowUp"></div>
+
+  <script src="script.js"></script>
+</body>
+</html>
