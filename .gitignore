@@ -4,8 +4,9 @@
 # But include the buildpage folder
 !buildpage/
 
-# Within buildpage, ignore all markdown files
+# Within buildpage, ignore all markdown files EXCEPT README.md
 buildpage/*.md
+!buildpage/README.md
 buildpage/extract-logo.html
 buildpage/image-compressor.html
 buildpage/unicornstudioreference.html
