@@ -183,8 +183,8 @@ function loadLogoImage() {
       console.error('❌ Failed to load logo image:', e);
       reject(e);
     };
-    console.log('Loading logo from: /homaralogo.png');
-    img.src = '/homaralogo.png';
+    console.log('Loading logo from: homaralogo.png');
+    img.src = 'homaralogo.png';
   });
 }
 
@@ -359,7 +359,7 @@ async function init() {
       console.error('❌ Logo image element not found in DOM');
       return;
     }
-    logoImageElement.src = '/homaralogo.png';
+    logoImageElement.src = 'homaralogo.png';
     console.log('✅ Logo element set');
 
     // Step 3: Setup input handlers
