@@ -251,11 +251,15 @@ function extendRoots(positions) {
   const centerX = rootBaseParticles.reduce((sum, p) => sum + p.x, 0) / rootBaseParticles.length;
   const centerZ = rootBaseParticles.reduce((sum, p) => sum + p.z, 0) / rootBaseParticles.length;
 
-  // Select MORE starting points for wider root spread
+  // Select MORE starting points for wider root spread (but limit to prevent stack overflow)
   const rootStarts = rootBaseParticles.filter(() => Math.random() < 0.20);
+  const maxRootStarts = 50; // Safety limit to prevent stack overflow
+  const limitedRootStarts = rootStarts.slice(0, maxRootStarts);
+
+  console.log(`Creating roots from ${limitedRootStarts.length} starting points (limited from ${rootStarts.length})`);
 
   // Create branching root structure for each starting point
-  rootStarts.forEach(startParticle => {
+  limitedRootStarts.forEach(startParticle => {
     // Calculate outward direction from center
     const outwardX = startParticle.x - centerX;
     const outwardZ = startParticle.z - centerZ;
@@ -269,8 +273,8 @@ function extendRoots(positions) {
 
 // Recursive function to create a single branching root with outward bias
 function createRootBranch(startPos, particleArray, depth, thickness, biasX, biasZ) {
-  // Safety check to prevent infinite recursion
-  if (depth >= 3 || thickness < 0.2) {
+  // Safety check to prevent infinite recursion (reduced from 3 to 2 for safety)
+  if (depth >= 2 || thickness < 0.2 || particleArray.length > 100000) {
     return;
   }
 
@@ -319,7 +323,8 @@ function createRootBranch(startPos, particleArray, depth, thickness, biasX, bias
   }
 
   // Chance to branch (split into sub-roots) - more branching for complexity
-  if (depth < 2 && Math.random() < 0.35) {
+  // Reduced depth check from 2 to 1 for safety
+  if (depth < 1 && Math.random() < 0.35 && particleArray.length < 80000) {
     const numBranches = Math.random() < 0.7 ? 2 : 3; // Usually 2, sometimes 3
 
     for (let b = 0; b < numBranches; b++) {
