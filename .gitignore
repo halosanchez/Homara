@@ -31,7 +31,8 @@ buildpage/unicornstudioreference.html
 !ref/
 !ref/*
 
-
+!assets/
+!assets/*
 # Keep .gitignore itself
 !.gitignore
 
