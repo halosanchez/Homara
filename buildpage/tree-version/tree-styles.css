@@ -38,45 +38,31 @@ body {
     flex-direction: column;
 }
 
-/* ===== FLOATING NAVIGATION ===== */
-.floating-nav {
+/* ===== HOME ICON (TOP LEFT) ===== */
+.home-icon {
     position: fixed;
     top: 20px;
     left: 20px;
     z-index: 1000;
-    display: flex;
-    gap: 0;
-    font-family: 'Braun Linear Light', sans-serif;
-    font-size: 18px;
-    color: #29353C;
     opacity: 0;
-    transition: opacity 1.5s ease-in;
+    transition: opacity 1.5s ease-in, transform 0.2s ease;
+    display: block;
+    width: 40px;
+    height: 40px;
 }
 
-.floating-nav.fade-in {
+.home-icon.fade-in {
     opacity: 1;
 }
 
-.floating-link {
-    background: none;
-    border: none;
-    padding: 0;
-    margin: 0;
-    font-family: 'Braun Linear Light', sans-serif;
-    font-size: 18px;
-    color: #29353C;
-    cursor: pointer;
-    transition: opacity 0.2s ease;
-    text-decoration: none;
+.home-icon img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
 }
 
-.floating-link:hover {
-    opacity: 0.6;
-}
-
-.nav-separator {
-    margin: 0 8px;
-    color: #29353C;
+.home-icon:hover {
+    transform: scale(1.1);
 }
 
 /* ===== TOP RIGHT LOGO ===== */
