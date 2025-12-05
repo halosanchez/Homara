@@ -1,6 +1,9 @@
 # Ignore everything by default
 *
 
+# LOCAL DOCUMENTATION - Never push to GitHub
+LOCAL_DOCS/
+
 # Include the buildpage folder
 !buildpage/
 
