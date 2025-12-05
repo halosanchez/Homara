@@ -6,8 +6,10 @@
 }
 
 @font-face {
-    font-family: 'PixelFont';
-    src: local('Courier New'), local('Courier'), local('Monaco'), local('Consolas');
+    font-family: 'Braun Linear Light';
+    src: url('../assets/BraunLinear-Light.ttf') format('truetype');
+    font-weight: 300;
+    font-style: normal;
 }
 
 body {
@@ -29,7 +31,7 @@ body {
     z-index: 1000;
     display: flex;
     gap: 0;
-    font-family: sans-serif;
+    font-family: 'Braun Linear Light', sans-serif;
     font-size: 18px;
     color: #29353C;
     opacity: 0;
@@ -45,7 +47,7 @@ body {
     border: none;
     padding: 0;
     margin: 0;
-    font-family: sans-serif;
+    font-family: 'Braun Linear Light', sans-serif;
     font-size: 18px;
     color: #29353C;
     cursor: pointer;
