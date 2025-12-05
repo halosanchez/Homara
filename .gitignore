@@ -25,9 +25,12 @@ buildpage/unicornstudioreference.html
 !buildpage/tree-version/
 !buildpage/tree-version/*
 
-# Include the apply folder
+# Include the apply and ref folder
 !apply/
 !apply/*
+!ref/
+!ref/*
+
 
 # Keep .gitignore itself
 !.gitignore

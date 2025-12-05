@@ -1,0 +1,319 @@
+/* ABOUTME: Styles for the Homara home page including navigation menu and layout */
+/* ABOUTME: Uses Braun Linear Light font for the navigation menu */
+
+@font-face {
+  font-family: 'Braun Linear Light';
+  src: url('/assets/fonts/BraunLinear-Light.ttf') format('truetype');
+  font-weight: 300;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Speran';
+  src: url('/assets/fonts/speran-13-15.otf') format('opentype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html, body {
+  width: 100%;
+  height: 100%;
+  font-family: sans-serif;
+  background: #FFFFFF;
+  color: #29353C;
+}
+
+#app {
+  width: 100%;
+  height: 100%;
+}
+
+.nav-menu {
+  position: fixed;
+  top: 20px;
+  left: 20px;
+  z-index: 1000;
+  display: flex;
+  gap: 0;
+  font-family: 'Braun Linear Light', sans-serif;
+  font-size: 18px;
+  color: #29353C;
+  opacity: 0;
+  transition: opacity 1.5s ease-in;
+}
+
+.nav-menu.fade-in {
+  opacity: 1;
+}
+
+.nav-item {
+  background: none;
+  border: none;
+  padding: 0;
+  margin: 0;
+  font-family: 'Braun Linear Light', sans-serif;
+  font-size: 18px;
+  color: #29353C;
+  cursor: pointer;
+  transition: opacity 0.2s ease;
+  text-decoration: none;
+}
+
+.nav-item:hover {
+  opacity: 0.6;
+}
+
+.nav-separator {
+  margin: 0 8px;
+  color: #29353C;
+}
+
+.homara-logo {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  height: 80px;
+  width: auto;
+  z-index: 1000;
+  opacity: 0;
+  transition: opacity 1.5s ease-in;
+}
+
+.homara-logo.fade-in {
+  opacity: 1;
+}
+
+.launch-button {
+  position: fixed;
+  bottom: 400px;
+  left: calc(50% - 300px);
+  transform: translateX(-50%);
+  background: none;
+  border: 2px solid #29353C;
+  padding: 12px 24px;
+  font-family: 'Braun Linear Light', sans-serif;
+  font-size: 24px;
+  color: #29353C;
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 1.5s ease-in, background 0.3s ease, color 0.3s ease;
+}
+
+.launch-button.fade-in {
+  opacity: 1;
+}
+
+.launch-button:hover {
+  background: #29353C;
+  color: #FFFFFF;
+}
+
+.video-container {
+  position: fixed;
+  /* Default position: middle-right */
+  right: var(--video-x, 100px);
+  top: 50%;
+  transform: translateY(-50%);
+
+  /* Default size */
+  width: var(--video-width, 750px);
+  height: var(--video-height, 400px);
+
+  z-index: 500;
+  opacity: 0;
+  transition: opacity 1.5s ease-in;
+  overflow: hidden;
+  border-radius: 8px;
+}
+
+.video-container::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 30%;
+  background: linear-gradient(to bottom, rgba(255, 255, 255, 0.9) 0%, rgba(255, 255, 255, 0) 100%);
+  z-index: 1;
+  pointer-events: none;
+}
+
+.video-container::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: 25%;
+  background: linear-gradient(to right, rgba(255, 255, 255, 0.7) 0%, rgba(255, 255, 255, 0) 100%);
+  z-index: 1;
+  pointer-events: none;
+}
+
+.video-container.fade-in {
+  opacity: 1;
+}
+
+.video-container video {
+  width: 200%;
+  height: 200%;
+  object-fit: cover;
+  position: relative;
+  left: -50%;
+  top: -50%;
+}
+
+.video-overlay-text {
+  position: absolute;
+  top: calc(50% + 100px);
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-family: 'Braun Linear Light', sans-serif;
+  font-size: 48px;
+  color: #FFFFFF;
+  white-space: nowrap;
+  z-index: 2;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.3s ease-in-out;
+}
+
+.video-container:hover .video-overlay-text {
+  opacity: 1;
+}
+
+.text-glow-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 601;
+  opacity: 0;
+  transition: opacity 1.5s ease-in;
+}
+
+.text-glow-overlay.fade-in {
+  opacity: 1;
+}
+
+.text-glow-content {
+  position: absolute;
+  bottom: 480px;
+  left: calc(50% - 300px);
+  transform: translateX(-50%);
+  font-family: 'Speran', sans-serif;
+  font-size: 36px;
+  white-space: nowrap;
+  color: transparent;
+  background: linear-gradient(
+    to top,
+    rgba(180, 180, 180, 1) 0%,
+    rgba(120, 120, 120, 1) 25%,
+    rgba(60, 60, 60, 1) 50%,
+    rgba(0, 0, 0, 1) 100%
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Mobile message styles */
+.mobile-message {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100vh;
+  background: #FFFFFF;
+  padding: 40px;
+  text-align: center;
+}
+
+.mobile-message-text {
+  font-family: 'Braun Linear Light', sans-serif;
+  font-size: 24px;
+  color: #29353C;
+  line-height: 1.6;
+  max-width: 600px;
+  margin: 0 0 40px 0;
+}
+
+.mobile-message-tip {
+  font-family: 'Braun Linear Light', sans-serif;
+  font-size: 14px;
+  color: #29353C;
+  opacity: 0.7;
+  margin: 0;
+}
+
+/* Responsive styles for tablet (768px - 1024px) */
+@media (min-width: 768px) and (max-width: 1024px) {
+  .nav-menu {
+    font-size: 14px;
+  }
+
+  .nav-item {
+    font-size: 14px;
+  }
+
+  .launch-button {
+    font-size: 20px;
+    padding: 10px 20px;
+    bottom: 360px;
+  }
+
+  .video-container {
+    width: calc(var(--video-width) * 0.7);
+    height: calc(var(--video-height) * 0.7);
+    right: 0;
+    bottom: -35px;
+  }
+
+  .text-glow-content {
+    font-size: 25px;
+    bottom: 424px;
+  }
+}
+
+/* Responsive styles for smaller desktop (1024px - 1440px) */
+@media (min-width: 1024px) and (max-width: 1440px) {
+  .nav-menu {
+    font-size: 16px;
+  }
+
+  .nav-item {
+    font-size: 16px;
+  }
+
+  .launch-button {
+    font-size: 22px;
+    padding: 11px 22px;
+    bottom: 380px;
+  }
+
+  .video-container {
+    width: calc(var(--video-width) * 0.85);
+    height: calc(var(--video-height) * 0.85);
+    right: 0;
+    bottom: -42px;
+  }
+
+  .text-glow-content {
+    font-size: 31px;
+    bottom: 452px;
+  }
+}
+
+
