@@ -21,7 +21,7 @@ const CONFIG = {
     flowSpeed: 0.12,              // Even slower to reduce blur
     flowHeight: 8,                // Shorter travel to keep particles in branch lines
     flowTurbulence: 0.04,         // Minimal horizontal drift to maintain sharp branches
-    samplingDensity: 1,           // Sample every pixel for maximum detail
+    samplingDensity: 2,           // Sample every 2nd pixel (4x faster, still detailed)
     // GROWTH ANIMATION SETTINGS
     saplingParticleRatio: 0.5,    // Show 50% of particles in sapling for denser appearance
     saplingHeightRange: [0.0, 0.45], // Show bottom 45% of tree height
@@ -911,7 +911,17 @@ async function init() {
       console.log('✅ Point cloud created successfully');
     }
 
-    // Step 7: Start animation loop
+    // Step 7: Hide loading indicator
+    const loadingIndicator = document.getElementById('loading-indicator');
+    if (loadingIndicator) {
+      loadingIndicator.classList.add('hidden');
+      // Remove from DOM after fade out
+      setTimeout(() => {
+        loadingIndicator.remove();
+      }, 500);
+    }
+
+    // Step 8: Start animation loop
     animate();
     console.log('✅ Animation loop started');
 
