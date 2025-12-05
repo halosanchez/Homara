@@ -1,5 +1,5 @@
 // TREE PAGE: Interactive Tree with Grid Background
-// Point cloud animation with mouse tracking
+// Point cloud animation with upward flow effect
 
 import * as THREE from 'https://esm.sh/three@0.160.0';
 import gsap from 'https://esm.sh/gsap@3.12.2';
@@ -21,11 +21,6 @@ const CONFIG = {
     flowSpeed: 0.12,              // Even slower to reduce blur
     flowHeight: 8,                // Shorter travel to keep particles in branch lines
     flowTurbulence: 0.04,         // Minimal horizontal drift to maintain sharp branches
-    // SLASHING WIND EFFECT (sword slash effect)
-    slashWidth: 60,               // Width of the slash/cut zone (narrower)
-    slashStrength: 20,            // How far particles are pushed away (subtle)
-    slashSmoothness: 0.15,        // How quickly particles move (smooth)
-    windReturnSpeed: 0.12,        // How quickly particles return to original position
     samplingDensity: 1,           // Sample every pixel for maximum detail
     // GROWTH ANIMATION SETTINGS
     saplingParticleRatio: 0.5,    // Show 50% of particles in sapling for denser appearance
@@ -38,17 +33,10 @@ const CONFIG = {
 
 // ===== GLOBAL STATE =====
 let treeImageElement = null;
-let mouseX = 0;
-let mouseY = 0;
-let prevMouseX = 0;
-let prevMouseY = 0;
-let mouseVelocityX = 0;
-let mouseVelocityY = 0;
 let scene, camera, renderer;
 let particleSystem = null;
 let treeImage = null;
 let particles = [];
-let animationTime = 0;
 let showPointCloud = true;  // Always show point cloud
 let isGrown = false;         // Track if tree has grown to adult
 let flowAnimationEnabled = false; // Growth flow animation (triggered on click)
@@ -95,22 +83,7 @@ function createBackgroundGrid() {
   window.addEventListener('resize', resize);
 }
 
-// ===== MOUSE TRACKING =====
-function setupMouseTracking() {
-  document.addEventListener('mousemove', (e) => {
-    // Store previous position
-    prevMouseX = mouseX;
-    prevMouseY = mouseY;
 
-    // Update current position
-    mouseX = e.clientX;
-    mouseY = e.clientY;
-
-    // Calculate velocity (direction of movement)
-    mouseVelocityX = mouseX - prevMouseX;
-    mouseVelocityY = mouseY - prevMouseY;
-  });
-}
 
 // ===== INPUT CONTROLS (Keyboard & Mouse) =====
 function setupInputControls() {
@@ -141,11 +114,6 @@ function setupInputControls() {
       } else {
         console.log('⚠️ Tree already grown, ignoring click');
       }
-    });
-
-    // Add hover effect logging for debugging
-    buildTriggerBox.addEventListener('mouseenter', () => {
-      console.log('🖱️ Mouse entered BUILD YOUR OWN box');
     });
   } else {
     console.warn('⚠️ BUILD YOUR OWN trigger box not found in DOM');
@@ -650,8 +618,6 @@ function createPointCloud() {
       phaseY: Math.random() * Math.PI * 2,
       phaseX: Math.random() * Math.PI * 2,
       speedMultiplier: 0.8 + Math.random() * 0.4,
-      windOffsetX: 0,
-      windOffsetY: 0,
       flowOffset: Math.random() * CONFIG.tree.flowHeight,
       driftX: (Math.random() - 0.5) * CONFIG.tree.flowTurbulence,
       driftZ: (Math.random() - 0.5) * CONFIG.tree.flowTurbulence
@@ -798,10 +764,6 @@ function animate() {
 
     const positions = particleSystem.geometry.attributes.position.array;
 
-    // Calculate mouse position in world coordinates
-    const mouseWorldX = mouseX - window.innerWidth / 2;
-    const mouseWorldY = -(mouseY - window.innerHeight / 2);
-
     // Initialize sapling flow state (do once)
     if (!particleArray.saplingFlowInitialized) {
       particleArray.saplingFlowInitialized = true;
@@ -836,44 +798,9 @@ function animate() {
           particle.driftZ = (Math.random() - 0.5) * CONFIG.tree.flowTurbulence;
         }
 
-        // Sword slash effect - push particles in the direction the sword (mouse) is moving
-        const dx = particle.originalX - mouseWorldX;
-        const dy = particle.originalY - mouseWorldY;
-        const distanceToMouse = Math.sqrt(dx * dx + dy * dy);
-
-        // Only affect particles within the slash zone
-        if (distanceToMouse < CONFIG.tree.slashWidth) {
-          // Calculate velocity magnitude
-          const velocityMag = Math.sqrt(mouseVelocityX * mouseVelocityX + mouseVelocityY * mouseVelocityY);
-
-          if (velocityMag > 0.5) { // Only slash if mouse is moving
-            // Normalize velocity to get slash direction
-            const slashDirX = mouseVelocityX / velocityMag;
-            const slashDirY = mouseVelocityY / velocityMag;
-
-            // Push strength based on distance
-            const pushStrength = (1 - distanceToMouse / CONFIG.tree.slashWidth) * CONFIG.tree.slashStrength;
-
-            // Push particles in the direction the sword is moving
-            const pushX = slashDirX * pushStrength;
-            const pushY = slashDirY * pushStrength;
-
-            particle.windOffsetX += (pushX - particle.windOffsetX) * CONFIG.tree.slashSmoothness;
-            particle.windOffsetY += (pushY - particle.windOffsetY) * CONFIG.tree.slashSmoothness;
-          } else {
-            // No movement, return to original
-            particle.windOffsetX += (0 - particle.windOffsetX) * CONFIG.tree.windReturnSpeed;
-            particle.windOffsetY += (0 - particle.windOffsetY) * CONFIG.tree.windReturnSpeed;
-          }
-        } else {
-          // Outside slash zone, return to original position
-          particle.windOffsetX += (0 - particle.windOffsetX) * CONFIG.tree.windReturnSpeed;
-          particle.windOffsetY += (0 - particle.windOffsetY) * CONFIG.tree.windReturnSpeed;
-        }
-
-        // Update position (rises from original position + wind effect)
-        positions[i * 3] = particle.originalX + particle.driftX + particle.windOffsetX;
-        positions[i * 3 + 1] = particle.originalY + particle.flowOffset + particle.windOffsetY;
+        // Update position (rises from original position with drift)
+        positions[i * 3] = particle.originalX + particle.driftX;
+        positions[i * 3 + 1] = particle.originalY + particle.flowOffset;
         positions[i * 3 + 2] = particle.originalZ + particle.driftZ;
       }
     });
@@ -887,10 +814,6 @@ function animate() {
     if (!flowAnimationEnabled) return; // Only run after growth
 
     const positions = particleSystem.geometry.attributes.position.array;
-
-    // Calculate mouse position in world coordinates
-    const mouseWorldX = mouseX - window.innerWidth / 2;
-    const mouseWorldY = -(mouseY - window.innerHeight / 2);
 
     // Initialize particle flow state (do once)
     if (!particleArray.flowInitialized) {
@@ -923,44 +846,9 @@ function animate() {
         particle.driftZ = (Math.random() - 0.5) * CONFIG.tree.flowTurbulence;
       }
 
-      // Sword slash effect - push particles in the direction the sword (mouse) is moving
-      const dx = particle.originalX - mouseWorldX;
-      const dy = particle.originalY - mouseWorldY;
-      const distanceToMouse = Math.sqrt(dx * dx + dy * dy);
-
-      // Only affect particles within the slash zone
-      if (distanceToMouse < CONFIG.tree.slashWidth) {
-        // Calculate velocity magnitude
-        const velocityMag = Math.sqrt(mouseVelocityX * mouseVelocityX + mouseVelocityY * mouseVelocityY);
-
-        if (velocityMag > 0.5) { // Only slash if mouse is moving
-          // Normalize velocity to get slash direction
-          const slashDirX = mouseVelocityX / velocityMag;
-          const slashDirY = mouseVelocityY / velocityMag;
-
-          // Push strength based on distance
-          const pushStrength = (1 - distanceToMouse / CONFIG.tree.slashWidth) * CONFIG.tree.slashStrength;
-
-          // Push particles in the direction the sword is moving
-          const pushX = slashDirX * pushStrength;
-          const pushY = slashDirY * pushStrength;
-
-          particle.windOffsetX += (pushX - particle.windOffsetX) * CONFIG.tree.slashSmoothness;
-          particle.windOffsetY += (pushY - particle.windOffsetY) * CONFIG.tree.slashSmoothness;
-        } else {
-          // No movement, return to original
-          particle.windOffsetX += (0 - particle.windOffsetX) * CONFIG.tree.windReturnSpeed;
-          particle.windOffsetY += (0 - particle.windOffsetY) * CONFIG.tree.windReturnSpeed;
-        }
-      } else {
-        // Outside slash zone, return to original position
-        particle.windOffsetX += (0 - particle.windOffsetX) * CONFIG.tree.windReturnSpeed;
-        particle.windOffsetY += (0 - particle.windOffsetY) * CONFIG.tree.windReturnSpeed;
-      }
-
-      // Update position (rises from original position + wind effect)
-      positions[i * 3] = particle.originalX + particle.driftX + particle.windOffsetX;
-      positions[i * 3 + 1] = particle.originalY + particle.flowOffset + particle.windOffsetY;
+      // Update position (rises from original position with drift)
+      positions[i * 3] = particle.originalX + particle.driftX;
+      positions[i * 3 + 1] = particle.originalY + particle.flowOffset;
       positions[i * 3 + 2] = particle.originalZ + particle.driftZ;
     });
 
@@ -999,9 +887,6 @@ async function init() {
     console.log('✅ Tree element set');
 
     // Step 3: Setup input handlers
-    setupMouseTracking();
-    console.log('✅ Mouse tracking enabled');
-
     setupInputControls();
     console.log('✅ Input controls enabled (click BUILD YOUR OWN box to grow tree)');
 
