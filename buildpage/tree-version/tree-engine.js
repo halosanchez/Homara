@@ -1034,6 +1034,14 @@ async function init() {
     console.log('🌱 Tree starts as a SAPLING - Click "BUILD YOUR OWN" to watch it GROW!');
     console.log('🖱️ After growth, particles will flow upward continuously');
 
+    // Trigger fade-in for navigation menu
+    setTimeout(() => {
+      const navMenu = document.querySelector('.floating-nav');
+      if (navMenu) {
+        navMenu.classList.add('fade-in');
+      }
+    }, 500);
+
   } catch (error) {
     console.error('❌ Failed to initialize tree page:', error);
     console.error(error.stack);

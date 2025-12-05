@@ -398,6 +398,14 @@ async function init() {
     console.log('📌 Press any key or click to toggle between logo and point cloud');
     console.log('🖱️ Move your mouse over the logo to see the wind effect');
 
+    // Trigger fade-in for navigation menu
+    setTimeout(() => {
+      const navMenu = document.querySelector('.floating-nav');
+      if (navMenu) {
+        navMenu.classList.add('fade-in');
+      }
+    }, 500);
+
   } catch (error) {
     console.error('❌ Failed to initialize build page:', error);
     console.error(error.stack);

@@ -24,42 +24,42 @@ body {
 /* ===== FLOATING NAVIGATION ===== */
 .floating-nav {
     position: fixed;
-    top: 40px;
-    left: 40px;
-    z-index: 100;
+    top: 20px;
+    left: 20px;
+    z-index: 1000;
     display: flex;
-    flex-direction: row;
-    gap: 50px;
-    align-items: center;
+    gap: 0;
+    font-family: sans-serif;
+    font-size: 18px;
+    color: #29353C;
+    opacity: 0;
+    transition: opacity 1.5s ease-in;
+}
+
+.floating-nav.fade-in {
+    opacity: 1;
 }
 
 .floating-link {
-    position: relative;
-    text-decoration: none;
-    color: #000000;
-    font-family: 'Courier New', 'Courier', 'Monaco', 'Consolas', monospace;
-    font-size: 22px;
-    font-weight: 600;
-    letter-spacing: 1.5px;
-    transition: all 0.3s ease;
+    background: none;
+    border: none;
+    padding: 0;
+    margin: 0;
+    font-family: sans-serif;
+    font-size: 18px;
+    color: #29353C;
     cursor: pointer;
-    padding: 10px 15px;
+    transition: opacity 0.2s ease;
+    text-decoration: none;
 }
 
 .floating-link:hover {
-    color: #666666;
-    transform: translateY(-2px);
+    opacity: 0.6;
 }
 
-.tree-link {
-    color: #4a90e2 !important;
-    border-left: 2px solid #4a90e2;
-    padding-left: 15px !important;
-    margin-left: 20px;
-}
-
-.tree-link:hover {
-    color: #357abd !important;
+.nav-separator {
+    margin: 0 8px;
+    color: #29353C;
 }
 
 /* ===== TOP RIGHT LOGO ===== */
