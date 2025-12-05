@@ -1,38 +1,34 @@
 # Ignore everything by default
 *
 
-# But include the buildpage folder
+# Include the buildpage folder
 !buildpage/
 
-# Within buildpage, ignore all markdown files EXCEPT README.md
+# Within buildpage, keep only essential documentation
 buildpage/*.md
 !buildpage/README.md
-buildpage/extract-logo.html
-buildpage/image-compressor.html
-buildpage/unicornstudioreference.html
-
-# Include BUILD PAGE files
-!buildpage/buildpage-index.html
-!buildpage/buildpage-engine.js
-!buildpage/buildpage-styles.css
-!buildpage/HomaraH-transparent.png
-!buildpage/HomaraH.png
-!buildpage/homara-logo.svg
-!buildpage/homaralogo.png
-!buildpage/tree-transparent.png
+!buildpage/POINT_CLOUD_GUIDE.md
+!buildpage/REPLICATION_TEMPLATE.md
 
 # Include tree-version folder and all its contents
 !buildpage/tree-version/
 !buildpage/tree-version/*
 
-# Include the apply and ref folder
+# Include tree-transparent.png (used by tree-version)
+!buildpage/tree-transparent.png
+
+# Include the apply folder
 !apply/
 !apply/*
-!ref/
-!ref/*
 
+# Include the REF folder
+!REF/
+!REF/*
+
+# Include the assets folder
 !assets/
 !assets/*
+
 # Keep .gitignore itself
 !.gitignore
 
