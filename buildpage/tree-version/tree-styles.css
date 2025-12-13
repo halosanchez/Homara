@@ -71,26 +71,18 @@ body {
     top: 15px;
     right: 15px;
     z-index: 100;
+    opacity: 0;
+    transition: opacity 1.5s ease-in;
+}
+
+.top-right-logo.fade-in {
+    opacity: 1;
 }
 
 .homara-logo {
     height: 80px;
     width: auto;
     filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
-}
-
-/* ===== HELP ICON ===== */
-.help-icon {
-    position: fixed;
-    bottom: 30px;
-    right: 30px;
-    z-index: 100;
-    cursor: pointer;
-    transition: transform 0.3s ease;
-}
-
-.help-icon:hover {
-    transform: scale(1.1);
 }
 
 /* ===== BACKGROUND GRID ===== */
@@ -102,6 +94,12 @@ body {
     height: 100%;
     z-index: 1;
     pointer-events: none;
+    opacity: 0;
+    transition: opacity 1.5s ease-in;
+}
+
+#background-canvas.fade-in {
+    opacity: 1;
 }
 
 /* ===== MAIN CONTAINER ===== */
@@ -156,10 +154,14 @@ body {
     left: 0;
     width: 100%;
     height: 100%;
-    opacity: 1;
-    transition: opacity 0.3s ease-in-out;
+    opacity: 0;
+    transition: opacity 1.5s ease-in;
     z-index: 20;
     pointer-events: none;
+}
+
+#pointcloud-canvas.fade-in {
+    opacity: 1;
 }
 
 /* ===== BUILD YOUR OWN TRIGGER BOX ===== */
@@ -179,12 +181,16 @@ body {
 
     /* Make it clickable */
     cursor: pointer;
-    transition: all 0.3s ease;
 
     /* Ensure it's visible above everything */
     z-index: 100;
-    opacity: 1;
+    opacity: 0;
     pointer-events: auto;
+    transition: opacity 1.5s ease-in, transform 0.3s ease, background-color 0.3s ease, border-color 0.3s ease;
+}
+
+.build-trigger-box.fade-in {
+    opacity: 1;
 }
 
 .build-trigger-box:hover {
@@ -216,4 +222,6 @@ body {
     pointer-events: none;
     transition: opacity 4s ease;
 }
+
+
 

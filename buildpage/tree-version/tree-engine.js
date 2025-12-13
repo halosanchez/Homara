@@ -28,6 +28,16 @@ const CONFIG = {
     saplingTaperExtension: 150,   // Larger random upward extension (px) for gradual taper
     saplingTaperStart: 0.7,       // Start tapering from 70% of sapling height
     growthDuration: 10.0          // Growth animation duration in seconds
+  },
+  sparks: {
+    frequency: 6.67,        // Trigger sparks every ~6.67ms (150 sparks per second)
+    popIntensity: 15,       // How far the initial "pop" pushes the particle
+    floatSpeed: 0.8,        // How fast the spark floats upward
+    floatHeight: 150,       // How far up the spark travels before fading
+    curveAmplitude: 20,     // How much the spark curves side-to-side
+    curveFrequency: 0.02,   // How wavy the curve is
+    fadeDuration: 3000,     // How long the spark takes to fade out (ms)
+    opacityBoost: 1.5,      // Multiply spark opacity by this amount (brighter sparks)
   }
 };
 
@@ -41,6 +51,7 @@ let showPointCloud = true;  // Always show point cloud
 let isGrown = false;         // Track if tree has grown to adult
 let flowAnimationEnabled = false; // Growth flow animation (triggered on click)
 let saplingAnimationEnabled = true; // Sapling always animated from start!
+let sparksEnabled = false;   // Fireplace spark effect (starts after growth)
 
 // ===== BACKGROUND GRID =====
 function createBackgroundGrid() {
@@ -149,6 +160,8 @@ function updateVisibility() {
     console.log('✅ Tree visible');
   }
 }
+
+
 
 // ===== THREE.JS SETUP =====
 function initThreeJS() {
@@ -620,7 +633,12 @@ function createPointCloud() {
       speedMultiplier: 0.8 + Math.random() * 0.4,
       flowOffset: Math.random() * CONFIG.tree.flowHeight,
       driftX: (Math.random() - 0.5) * CONFIG.tree.flowTurbulence,
-      driftZ: (Math.random() - 0.5) * CONFIG.tree.flowTurbulence
+      driftZ: (Math.random() - 0.5) * CONFIG.tree.flowTurbulence,
+      // Spark properties
+      isSparking: false,
+      sparkProgress: 0,
+      sparkStartTime: 0,
+      sparkCurvePhase: Math.random() * Math.PI * 2
     };
   });
 
@@ -693,6 +711,10 @@ function growTree() {
   saplingAnimationEnabled = false; // Stop sapling animation
   flowAnimationEnabled = true; // Start full tree flow animation
 
+  // Start sparks immediately when growth begins
+  sparksEnabled = true;
+  startSparkSystem();
+
   const startTime = performance.now();
   const duration = CONFIG.tree.growthDuration * 1000; // Convert to milliseconds
 
@@ -747,10 +769,166 @@ function growTree() {
         opacityArray[i] = 1.0;
       });
       particleSystem.geometry.attributes.opacity.needsUpdate = true;
+
+      // Sparks already enabled at start of growth
     }
   }
 
   animateGrowth();
+}
+
+// ===== SPARK SYSTEM (Fireplace Effect) =====
+function startSparkSystem() {
+  console.log('🔥 Starting spark system...');
+
+  // Find particles in the root area (bottom 20% of tree)
+  const sortedByY = [...particles].sort((a, b) => a.originalY - b.originalY);
+  const minY = sortedByY[0].originalY;
+  const maxY = sortedByY[sortedByY.length - 1].originalY;
+  const treeHeight = maxY - minY;
+  const rootThreshold = minY + treeHeight * 0.2; // Bottom 20% = roots
+
+  const rootParticles = particles
+    .map((p, index) => ({ particle: p, index }))
+    .filter(({ particle }) => particle.originalY <= rootThreshold);
+
+  console.log(`🌱 Found ${rootParticles.length} root particles for extra sparks`);
+
+  // Find outer edge particles (farthest from center horizontally)
+  // Calculate horizontal distance from center for each particle
+  const particlesWithDistance = particles.map((p, index) => {
+    const horizontalDistance = Math.sqrt(p.originalX * p.originalX + p.originalZ * p.originalZ);
+    return { particle: p, index, horizontalDistance };
+  });
+
+  // Sort by horizontal distance and take the outer 30% (farthest from center)
+  const sortedByDistance = [...particlesWithDistance].sort((a, b) => b.horizontalDistance - a.horizontalDistance);
+  const outerThreshold = Math.floor(sortedByDistance.length * 0.3); // Top 30% farthest particles
+  const outerParticles = sortedByDistance.slice(0, outerThreshold);
+
+  console.log(`🌿 Found ${outerParticles.length} outer edge particles for extra sparks`);
+
+  // General sparks (anywhere on tree) - 150 per second
+  setInterval(() => {
+    if (!sparksEnabled || particles.length === 0) return;
+
+    // Pick a random particle to spark
+    const randomIndex = Math.floor(Math.random() * particles.length);
+    const particle = particles[randomIndex];
+
+    // Don't spark if already sparking
+    if (particle.isSparking) return;
+
+    // Start the spark
+    particle.isSparking = true;
+    particle.sparkProgress = 0;
+    particle.sparkStartTime = performance.now();
+  }, CONFIG.sparks.frequency);
+
+  // Root-specific sparks - 50 per second (every 20ms)
+  setInterval(() => {
+    if (!sparksEnabled || rootParticles.length === 0) return;
+
+    // Pick a random root particle to spark
+    const randomRootIndex = Math.floor(Math.random() * rootParticles.length);
+    const { particle } = rootParticles[randomRootIndex];
+
+    // Don't spark if already sparking
+    if (particle.isSparking) return;
+
+    // Start the spark
+    particle.isSparking = true;
+    particle.sparkProgress = 0;
+    particle.sparkStartTime = performance.now();
+  }, 20); // 50 sparks per second from roots
+
+  // Outer edge sparks - 50 per second (every 20ms)
+  setInterval(() => {
+    if (!sparksEnabled || outerParticles.length === 0) return;
+
+    // Pick a random outer edge particle to spark
+    const randomOuterIndex = Math.floor(Math.random() * outerParticles.length);
+    const { particle } = outerParticles[randomOuterIndex];
+
+    // Don't spark if already sparking
+    if (particle.isSparking) return;
+
+    // Start the spark
+    particle.isSparking = true;
+    particle.sparkProgress = 0;
+    particle.sparkStartTime = performance.now();
+  }, 20); // 50 sparks per second from outer edges
+}
+
+function updateSparks(particleSystem, particleArray) {
+  if (!particleSystem || particleArray.length === 0) return;
+  if (!sparksEnabled) return;
+
+  const positions = particleSystem.geometry.attributes.position.array;
+  const opacityArray = particleSystem.geometry.attributes.opacity.array;
+  const now = performance.now();
+
+  particleArray.forEach((particle, i) => {
+    if (!particle.isSparking) return;
+
+    const elapsed = now - particle.sparkStartTime;
+    const progress = Math.min(elapsed / CONFIG.sparks.fadeDuration, 1.0);
+
+    if (progress >= 1.0) {
+      // Spark complete - reset particle to original position
+      particle.isSparking = false;
+      particle.sparkProgress = 0;
+      positions[i * 3] = particle.originalX;
+      positions[i * 3 + 1] = particle.originalY;
+      positions[i * 3 + 2] = particle.originalZ;
+      opacityArray[i] = particle.currentOpacity;
+    } else {
+      // Animate the spark
+      particle.sparkProgress = progress;
+
+      // Phase 1 (0-0.1): Quick "pop" outward
+      // Phase 2 (0.1-1.0): Float upward in curvy path
+
+      let offsetX = 0;
+      let offsetY = 0;
+      let offsetZ = 0;
+
+      if (progress < 0.1) {
+        // Pop phase - quick outward movement
+        const popProgress = progress / 0.1;
+        const popDistance = CONFIG.sparks.popIntensity * Math.sin(popProgress * Math.PI);
+        const randomAngle = particle.sparkCurvePhase;
+        offsetX = Math.cos(randomAngle) * popDistance;
+        offsetZ = Math.sin(randomAngle) * popDistance;
+        offsetY = popDistance * 0.5; // Slight upward pop
+      } else {
+        // Float phase - curvy upward movement
+        const floatProgress = (progress - 0.1) / 0.9;
+
+        // Upward movement
+        offsetY = floatProgress * CONFIG.sparks.floatHeight;
+
+        // Curvy side-to-side movement (sine wave)
+        const curveOffset = floatProgress * CONFIG.sparks.curveFrequency * Math.PI * 2;
+        offsetX = Math.sin(particle.sparkCurvePhase + curveOffset) * CONFIG.sparks.curveAmplitude;
+        offsetZ = Math.cos(particle.sparkCurvePhase + curveOffset) * CONFIG.sparks.curveAmplitude * 0.5;
+      }
+
+      // Apply offsets to position
+      positions[i * 3] = particle.originalX + offsetX;
+      positions[i * 3 + 1] = particle.originalY + offsetY;
+      positions[i * 3 + 2] = particle.originalZ + offsetZ;
+
+      // Fade out as it floats up (starts fading after pop phase)
+      const fadeProgress = Math.max(0, (progress - 0.1) / 0.9);
+      const baseOpacity = particle.currentOpacity * (1.0 - fadeProgress);
+      // Boost opacity for brighter sparks (clamped to max 1.0)
+      opacityArray[i] = Math.min(baseOpacity * CONFIG.sparks.opacityBoost, 1.0);
+    }
+  });
+
+  particleSystem.geometry.attributes.position.needsUpdate = true;
+  particleSystem.geometry.attributes.opacity.needsUpdate = true;
 }
 
 // ===== ANIMATION LOOP =====
@@ -862,6 +1040,11 @@ function animate() {
     updateFullTreeFlow(particleSystem, particles);
   }
 
+  // Update sparks (runs after tree is fully grown)
+  if (sparksEnabled) {
+    updateSparks(particleSystem, particles);
+  }
+
   // Always render the scene
   if (renderer && scene && camera) {
     renderer.render(scene, camera);
@@ -919,13 +1102,25 @@ async function init() {
     console.log('🌱 Tree starts as a SAPLING - Click "BUILD YOUR OWN" to watch it GROW!');
     console.log('🖱️ After growth, particles will flow upward continuously');
 
-    // Trigger fade-in for home icon
-    setTimeout(() => {
-      const homeIcon = document.querySelector('.home-icon');
-      if (homeIcon) {
-        homeIcon.classList.add('fade-in');
-      }
-    }, 500);
+    // Trigger fade-in for all elements after tree is loaded
+    // Use requestAnimationFrame to ensure CSS opacity:0 is applied first
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        const homeIcon = document.querySelector('.home-icon');
+        const topRightLogo = document.querySelector('.top-right-logo');
+        const buildTriggerBox = document.querySelector('.build-trigger-box');
+        const pointcloudCanvas = document.querySelector('#pointcloud-canvas');
+        const backgroundCanvas = document.querySelector('#background-canvas');
+
+        if (homeIcon) homeIcon.classList.add('fade-in');
+        if (topRightLogo) topRightLogo.classList.add('fade-in');
+        if (buildTriggerBox) buildTriggerBox.classList.add('fade-in');
+        if (pointcloudCanvas) pointcloudCanvas.classList.add('fade-in');
+        if (backgroundCanvas) backgroundCanvas.classList.add('fade-in');
+
+        console.log('✨ All elements fading in...');
+      });
+    });
 
   } catch (error) {
     console.error('❌ Failed to initialize tree page:', error);
